@@ -56,7 +56,10 @@ def render_pdf_html(
 
 def _generate_pdf_bytes_sync(html_content: str) -> bytes:
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
+        browser = p.chromium.launch(
+            headless=True,
+            args=["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage", "--disable-gpu"],
+        )
         try:
             page = browser.new_page(viewport={"width": 1400, "height": 990})
             page.set_content(html_content, wait_until="load")
