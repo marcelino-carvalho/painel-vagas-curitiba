@@ -1,11 +1,9 @@
 """
-Camada de persistência em banco de dados SQLite para armazenamento dos painéis publicados.
-Garante que cada painel publicado tenha um endereço único (slug) que permanece o mesmo
-quando o painel é atualizado e republicado.
+Camada de persistência em banco de dados SQLite para armazenamento dos painéis publicados
+e configurações operacionais (como o modo anti-hibernação para o dia do mutirão).
 """
 
 import json
-import os
 import secrets
 import sqlite3
 from datetime import datetime, timezone
@@ -46,7 +44,37 @@ def init_db() -> None:
             )
             """
         )
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS settings (
+                key TEXT PRIMARY KEY,
+                value TEXT NOT NULL
+            )
+            """
+        )
         conn.commit()
+
+
+def get_keep_alive_enabled() -> bool:
+    init_db()
+    with get_connection() as conn:
+        row = conn.execute("SELECT value FROM settings WHERE key = 'keep_alive_enabled'").fetchone()
+        return bool(row and row["value"] == "1")
+
+
+def set_keep_alive_enabled(enabled: bool) -> bool:
+    init_db()
+    val = "1" if enabled else "0"
+    with get_connection() as conn:
+        conn.execute(
+            """
+            INSERT INTO settings (key, value) VALUES ('keep_alive_enabled', ?)
+            ON CONFLICT(key) DO UPDATE SET value = excluded.value
+            """,
+            (val,),
+        )
+        conn.commit()
+    return enabled
 
 
 def generate_unique_slug(title: str, conn: sqlite3.Connection) -> str:
@@ -86,7 +114,6 @@ def save_or_update_panel(
             ).fetchone()
 
         if existing:
-            # Atualiza o painel existente mantendo exatamente o mesmo endereço público (slug)
             final_logo = logo_data_url if logo_data_url is not None else existing["logo_data_url"]
             conn.execute(
                 """

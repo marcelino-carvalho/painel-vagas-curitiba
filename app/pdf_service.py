@@ -17,6 +17,7 @@ from reportlab.lib.utils import ImageReader
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfgen import canvas
 
+from app.default_logo import DEFAULT_LOGO_DATA_URL
 from app.qr_service import generate_qr_png_data_url
 
 PAGE_W, PAGE_H = landscape(A4)  # 841.89 x 595.27 pt (297mm x 210mm)
@@ -504,7 +505,7 @@ def generate_panel_pdf_sync(
     _, qr_b64 = qr_data_url.split(",", 1)
     qr_reader = ImageReader(io.BytesIO(base64.b64decode(qr_b64)))
 
-    custom_logo = _decode_custom_logo(logo_data_url)
+    custom_logo = _decode_custom_logo(logo_data_url or DEFAULT_LOGO_DATA_URL)
     col_w = SHEET_W / float(COLS)
 
     # 1. Tenta manter todas as empresas em uma única página A4 Paisagem dentro de limites legíveis

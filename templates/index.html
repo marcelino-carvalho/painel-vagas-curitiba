@@ -7,11 +7,15 @@
   <link rel="stylesheet" href="/static/css/admin.css" />
 </head>
 <body>
-  <!-- Cabeçalho do Sistema -->
+  <!-- Cabeçalho do Sistema com o Brasão ao lado superior esquerdo do título -->
   <header class="app-topbar">
     <div class="topbar-inner">
       <div class="brand-group">
-        <div class="brand-flag" aria-hidden="true"></div>
+        <img
+          src="/static/img/brasao-parana.png"
+          alt="Brasão do Estado do Paraná"
+          class="brand-brasao"
+        />
         <div class="brand-titles">
           <h1>Painel de Vagas — Agência do Trabalhador</h1>
           <p>Sistema de Geração Automatizada de Painéis para Mutirões de Emprego de Curitiba</p>
@@ -42,9 +46,6 @@
         </div>
 
         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-          <button type="button" id="btn-load-sample-65" class="btn btn-secondary">
-            📋 Carregar Modelo Completo (65 Empresas)
-          </button>
           <button type="button" id="btn-new-panel" class="btn btn-secondary" title="Iniciar um novo painel com novo link público">
             ➕ Novo Painel
           </button>
@@ -96,7 +97,7 @@
             </div>
           </div>
 
-          <!-- Coluna Direita: Contadores, Personalização do Logotipo e Status Público -->
+          <!-- Coluna Direita: Contadores, Personalização do Logotipo, QR Code e Modo Dia do Mutirão -->
           <div class="side-controls">
             <!-- Indicadores de Quantidade -->
             <div class="counters-grid">
@@ -110,13 +111,34 @@
               </div>
             </div>
 
+            <!-- Função: Manter o QR Code funcionando (utilizar no dia do mutirão) -->
+            <div id="keepalive-card" class="keepalive-card">
+              <div class="keepalive-row">
+                <div>
+                  <div class="keepalive-title">
+                    ⚡ Manter o QR Code funcionando (utilizar no dia do mutirão)
+                  </div>
+                  <span id="keepalive-status-text" style="font-size: 11.5px; font-weight: 700; color: #64748b;">
+                    Desativado (Modo de economia ativo)
+                  </span>
+                </div>
+                <label class="keepalive-switch" title="Ativar/Desativar modo sem hibernação para o dia do mutirão">
+                  <input type="checkbox" id="keepalive-checkbox" />
+                  <span class="keepalive-slider"></span>
+                </label>
+              </div>
+              <p class="keepalive-desc">
+                Quando ativado, o servidor no Render permanece acordado continuamente para que o mural abra instantaneamente no celular dos candidatos. <strong>Desligue quando o mutirão acabar</strong> para evitar consumo desnecessário de memória.
+              </p>
+            </div>
+
             <!-- Personalização de Logotipo e Cabeçalho das Células -->
             <div class="sub-card">
               <div class="sub-card-title">
-                <span>Identidade Visual e Logotipo</span>
+                <span>Identidade Visual e Logotipo do PDF</span>
               </div>
               <div class="logo-control-row">
-                <div class="logo-thumb-box" title="Logotipo atual do cabeçalho">
+                <div class="logo-thumb-box" title="Logotipo atual do cabeçalho do PDF">
                   <img id="logo-thumb-img" src="{{ default_logo_data_url }}" alt="Miniatura do Logotipo" />
                 </div>
                 <div style="display: flex; flex-direction: column; gap: 6px; flex: 1;">

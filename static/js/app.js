@@ -13,8 +13,11 @@
   const btnExportPdf = document.getElementById("btn-export-pdf");
   const btnZoom = document.getElementById("btn-zoom");
   const btnClear = document.getElementById("btn-clear");
-  const btnLoadSample65 = document.getElementById("btn-load-sample-65");
   const btnNewPanel = document.getElementById("btn-new-panel");
+
+  const keepAliveCard = document.getElementById("keepalive-card");
+  const keepAliveCheckbox = document.getElementById("keepalive-checkbox");
+  const keepAliveStatusText = document.getElementById("keepalive-status-text");
 
   const logoFileInput = document.getElementById("logo-file-input");
   const btnUploadLogo = document.getElementById("btn-upload-logo");
@@ -49,9 +52,10 @@
   let currentSlug = bootData.initial_slug || null;
   let currentPublicUrl = bootData.initial_public_url || "";
   let currentQrDataUrl = bootData.initial_qr_data_url || "";
-  let currentLogoDataUrl = null; // null = usar default_logo
+  let currentLogoDataUrl = null;
   const defaultLogoDataUrl = bootData.default_logo_data_url || "";
-  const sample65Text = bootData.sample_65_text || "";
+  let keepAliveActive = Boolean(bootData.keep_alive_enabled);
+  let keepAliveTimer = null;
 
   function showToast(message, type) {
     if (!toastEl) return;
@@ -61,6 +65,63 @@
     toastEl._timer = setTimeout(function () {
       toastEl.className = "toast-notification";
     }, 4000);
+  }
+
+  function updateKeepAliveUI(enabled) {
+    keepAliveActive = Boolean(enabled);
+    if (keepAliveCheckbox) {
+      keepAliveCheckbox.checked = keepAliveActive;
+    }
+    if (keepAliveCard) {
+      if (keepAliveActive) {
+        keepAliveCard.classList.add("active");
+      } else {
+        keepAliveCard.classList.remove("active");
+      }
+    }
+    if (keepAliveStatusText) {
+      if (keepAliveActive) {
+        keepAliveStatusText.textContent = "ATIVO — Servidor sempre ligado para acesso imediato no celular";
+        keepAliveStatusText.style.color = "#047857";
+      } else {
+        keepAliveStatusText.textContent = "Desativado (Modo de economia de memória ativo)";
+        keepAliveStatusText.style.color = "#64748b";
+      }
+    }
+
+    if (keepAliveTimer) {
+      clearInterval(keepAliveTimer);
+      keepAliveTimer = null;
+    }
+    if (keepAliveActive) {
+      // Ping periódico adicional a cada 3 minutos enquanto a aba estiver aberta
+      keepAliveTimer = setInterval(function () {
+        fetch("/api/ping").catch(function () {});
+      }, 180000);
+    }
+  }
+
+  async function toggleKeepAlive(enabled) {
+    try {
+      const res = await fetch("/api/keep-alive", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ enabled: Boolean(enabled) }),
+      });
+      if (!res.ok) {
+        throw new Error("Não foi possível alterar o modo do QR Code.");
+      }
+      const data = await res.json();
+      updateKeepAliveUI(data.enabled);
+      if (data.enabled) {
+        showToast("Modo Dia do Mutirão ATIVADO: o painel não desligará automaticamente no Render!", "success");
+      } else {
+        showToast("Modo Dia do Mutirão DESLIGADO: economia de recursos ativada.", "success");
+      }
+    } catch (err) {
+      updateKeepAliveUI(!enabled);
+      showToast(err.message || "Erro ao alterar configuração.", "error");
+    }
   }
 
   function shouldUseTwoCols(jobs) {
@@ -183,7 +244,7 @@
       previewGridEl.appendChild(cell);
     });
 
-    // Posiciona o QR Code no canto inferior direito (na última linha se sobrarem >= 2 colunas, ou em barra inferior)
+    // Posiciona o QR Code no canto inferior direito
     const remainder = parsed.companies.length % 7;
     const freeCols = remainder === 0 ? 0 : 7 - remainder;
 
@@ -282,7 +343,6 @@
     btnExportPdf.textContent = "Gerando PDF A4...";
 
     try {
-      // Garante que o painel esteja publicado e atualizado no link público do QR Code
       const pubData = await publishPanel(true);
       if (!pubData || !pubData.slug) {
         return;
@@ -328,6 +388,12 @@
     headerStyleSelect.addEventListener("change", function () {
       updatePublishUI(false);
       renderPreview();
+    });
+  }
+
+  if (keepAliveCheckbox) {
+    keepAliveCheckbox.addEventListener("change", function (e) {
+      toggleKeepAlive(e.target.checked);
     });
   }
 
@@ -381,17 +447,6 @@
     showToast("Campo de empresas e vagas limpo.", "success");
   });
 
-  // Carregar exemplo completo de 65 empresas (Mutirão Pinheirinho)
-  if (btnLoadSample65) {
-    btnLoadSample65.addEventListener("click", function () {
-      titleInput.value = "MUTIRÃO EMPREGA + PINHEIRINHO | CASA DO TRABALHADOR";
-      vagasInput.value = sample65Text;
-      updatePublishUI(false);
-      renderPreview();
-      showToast("Exemplo completo com 65 empresas carregado!", "success");
-    });
-  }
-
   // Criar novo painel (novo endereço exclusivo)
   if (btnNewPanel) {
     btnNewPanel.addEventListener("click", function () {
@@ -442,6 +497,7 @@
   });
 
   // Inicialização
+  updateKeepAliveUI(keepAliveActive);
   updatePublishUI(Boolean(currentSlug));
   renderPreview();
 })();
