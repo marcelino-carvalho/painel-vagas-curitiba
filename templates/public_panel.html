@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ panel.title }} — Painel de Vagas</title>
+  <style>
+    :root {
+      --bg-page: #f3f4f6;
+      --bg-card: #ffffff;
+      --header-gray: #dcdcdc;
+      --dark-strip: #18202c;
+      --accent-red: #b91c1c;
+      --accent-green: #007a33;
+      --text-main: #111827;
+      --text-muted: #4b5563;
+      --border-color: #cbd5e1;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.45;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 48px;
+    }
+
+    /* Topo Institucional inspirado no painel impresso */
+    .inst-header {
+      background: var(--header-gray);
+      border-bottom: 3px solid #374151;
+      padding: 14px 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .inst-header-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      text-align: center;
+    }
+
+    @media (min-width: 768px) {
+      .inst-header-inner {
+        flex-direction: row;
+        justify-content: space-between;
+        text-align: center;
+      }
+    }
+
+    .inst-logo {
+      height: 52px;
+      width: auto;
+      max-width: 240px;
+      object-fit: contain;
+    }
+
+    .inst-title-box {
+      flex: 1;
+    }
+
+    .inst-badge {
+      display: inline-block;
+      background: #18202c;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 99px;
+      margin-bottom: 4px;
+    }
+
+    .inst-title {
+      font-size: clamp(18px, 4vw, 25px);
+      font-weight: 900;
+      text-transform: uppercase;
+      color: #090d16;
+      line-height: 1.2;
+    }
+
+    /* Barra de resumo e busca rápida */
+    .summary-bar {
+      max-width: 1280px;
+      margin: 16px auto 12px;
+      padding: 0 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    @media (min-width: 640px) {
+      .summary-bar {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .stats-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .stat-pill {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #1f2937;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    }
+
+    .stat-pill strong {
+      color: var(--accent-red);
+      font-size: 16px;
+    }
+
+    .search-box {
+      position: relative;
+      flex: 1;
+      max-width: 420px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid #94a3b8;
+      border-radius: 8px;
+      font-size: 15px;
+      background: #ffffff;
+      color: #111827;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .search-input:focus {
+      border-color: #18202c;
+      box-shadow: 0 0 0 3px rgba(24, 32, 44, 0.12);
+    }
+
+    /* Grade responsiva de empresas */
+    .companies-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 14px;
+    }
+
+    .companies-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    @media (min-width: 560px) {
+      .companies-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 900px) {
+      .companies-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (min-width: 1200px) {
+      .companies-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .company-card {
+      background: var(--bg-card);
+      border: 1.5px solid #9ca3af;
+      border-radius: 6px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .company-card-header {
+      background: var(--dark-strip);
+      color: #ffffff;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      border-bottom: 1px solid #374151;
+    }
+
+    .company-badge {
+      background: #ffffff;
+      color: #111827;
+      font-weight: 900;
+      font-size: 13px;
+      min-width: 26px;
+      height: 24px;
+      padding: 0 6px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .company-title {
+      font-weight: 800;
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.2px;
+      line-height: 1.25;
+      word-break: break-word;
+    }
+
+    .company-jobs {
+      list-style: none;
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .company-job-item {
+      font-size: 14.5px;
+      font-weight: 600;
+      color: #1f2937;
+      text-transform: uppercase;
+      padding-left: 12px;
+      position: relative;
+      line-height: 1.35;
+      word-break: break-word;
+    }
+
+    .company-job-item::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--accent-red);
+      font-weight: 900;
+    }
+
+    .empty-search {
+      display: none;
+      background: #ffffff;
+      border: 1px dashed #9ca3af;
+      border-radius: 8px;
+      padding: 32px 16px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 16px;
+      margin-top: 12px;
+    }
+
+    .public-footer {
+      max-width: 1280px;
+      margin: 28px auto 0;
+      padding: 16px 14px 0;
+      border-top: 1px solid #cbd5e1;
+      text-align: center;
+      font-size: 13px;
+      color: #4b5563;
+    }
+  </style>
+</head>
+<body>
+  <header class="inst-header">
+    <div class="inst-header-inner">
+      <img
+        src="{{ panel.logo_data_url or default_logo }}"
+        alt="Logotipo Institucional"
+        class="inst-logo"
+      />
+      <div class="inst-title-box">
+        <span class="inst-badge">Agência do Trabalhador de Curitiba</span>
+        <h1 class="inst-title" id="public-panel-title">{{ panel.title }}</h1>
+      </div>
+    </div>
+  </header>
+
+  <section class="summary-bar">
+    <div class="stats-pills">
+      <div class="stat-pill">
+        <strong id="public-company-count">{{ panel.total_companies }}</strong>
+        <span>{{ "Empresa participante" if panel.total_companies == 1 else "Empresas participantes" }}</span>
+      </div>
+      <div class="stat-pill">
+        <strong id="public-job-count">{{ panel.total_jobs }}</strong>
+        <span>{{ "Função / Vaga listada" if panel.total_jobs == 1 else "Funções / Vagas listadas" }}</span>
+      </div>
+    </div>
+
+    <div class="search-box">
+      <input
+        type="search"
+        id="filter-input"
+        class="search-input"
+        placeholder="Filtrar por empresa ou vaga..."
+        aria-label="Filtrar por empresa ou vaga"
+      />
+    </div>
+  </section>
+
+  <main class="companies-container">
+    <div class="companies-grid" id="companies-grid">
+      {% for comp in panel.companies %}
+      <article class="company-card" data-search="{{ (comp.name ~ ' ' ~ (comp.jobs | join(' '))) | lower }}">
+        <div class="company-card-header">
+          <span class="company-badge">{{ comp.number }}</span>
+          <h2 class="company-title">{{ comp.name }}</h2>
+        </div>
+        <ul class="company-jobs">
+          {% if comp.jobs %}
+            {% for job in comp.jobs %}
+            <li class="company-job-item">{{ job }}</li>
+            {% endfor %}
+          {% else %}
+            <li class="company-job-item">Vagas em cadastramento</li>
+          {% endif %}
+        </ul>
+      </article>
+      {% endfor %}
+    </div>
+
+    <div class="empty-search" id="empty-search">
+      Nenhuma empresa ou vaga encontrada para o termo pesquisado.
+    </div>
+  </main>
+
+  <footer class="public-footer">
+    Painel Público Digital — Agência do Trabalhador de Curitiba | Secretaria do Trabalho, Qualificação e Renda
+  </footer>
+
+  <script>
+    (function () {
+      const input = document.getElementById("filter-input");
+      const cards = Array.from(document.querySelectorAll(".company-card"));
+      const emptyMsg = document.getElementById("empty-search");
+
+      if (!input) return;
+      input.addEventListener("input", function () {
+        const term = input.value.trim().toLowerCase();
+        let visibleCount = 0;
+        cards.forEach(function (card) {
+          const text = card.getAttribute("data-search") || "";
+          const match = !term || text.indexOf(term) !== -1;
+          card.style.display = match ? "flex" : "none";
+          if (match) visibleCount++;
+        });
+        emptyMsg.style.display = visibleCount === 0 && cards.length > 0 ? "block" : "none";
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>{{ title }}</title>
+  <style>
+    @page {
+      size: A4 landscape;
+      margin: 5mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    html, body {
+      width: 100%;
+      background: #ffffff;
+      font-family: "Inter", "Segoe UI", Roboto, Arial, Helvetica, sans-serif;
+      color: #111827;
+    }
+
+    #pages-root {
+      width: 100%;
+    }
+
+    .a4-sheet {
+      width: 287mm;
+      height: 199mm;
+      border: 1.5px solid #4b5563;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+       justify-content: space-between;
+      overflow: hidden;
+      position: relative;
+      page-break-after: always;
+      break-after: page;
+    }
+
+    .a4-sheet:last-child {
+      page-break-after: auto;
+      break-after: auto;
+    }
+
+    /* Cabeçalho Institucional */
+    .sheet-header {
+      background: #dcdcdc;
+      border-bottom: 1.5px solid #6b7280;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: calc(6px * var(--scale, 1)) calc(12px * var(--scale, 1));
+      min-height: calc(54px * var(--scale, 1));
+      flex-shrink: 0;
+      gap: 12px;
+    }
+
+    .header-logo-wrap {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+      width: calc(195px * var(--scale, 1));
+    }
+
+    .header-logo-wrap img {
+      max-height: calc(44px * var(--scale, 1));
+      max-width: 100%;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    .header-title-wrap {
+      flex: 1;
+      text-align: center;
+      padding: 0 8px;
+    }
+
+    .header-title {
+      font-size: calc(18.5px * var(--scale, 1));
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      color: #090d16;
+      line-height: 1.15;
+    }
+
+    .header-right-spacer {
+      width: calc(110px * var(--scale, 1));
+      text-align: right;
+      font-size: 9px;
+      font-weight: 700;
+      color: #374151;
+      flex-shrink: 0;
+    }
+
+    /* Grade de 7 colunas */
+    .grid-body {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      grid-auto-rows: 1fr;
+      width: 100%;
+      border-collapse: collapse;
+      align-content: stretch;
+    }
+
+    .company-cell {
+      border-right: 1px solid #9ca3af;
+      border-bottom: 1px solid #9ca3af;
+      padding: calc(4px * var(--scale, 1)) calc(5px * var(--scale, 1));
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      background: #ffffff;
+      min-width: 0;
+    }
+
+    .company-cell:nth-child(7n) {
+      border-right: none;
+    }
+
+    /* Estilo com faixa de identificação escura e texto branco (Padrão solicitado) */
+    .company-header {
+      display: flex;
+      align-items: center;
+      gap: calc(4px * var(--scale, 1));
+      margin-bottom: calc(3.5px * var(--scale, 1));
+      line-height: 1.12;
+    }
+
+    .style-dark .company-header {
+      background: #18202c;
+      color: #ffffff;
+      padding: calc(2.5px * var(--scale, 1)) calc(4px * var(--scale, 1));
+      border-radius: 2px;
+      margin: calc(-2px * var(--scale, 1)) calc(-2px * var(--scale, 1)) calc(3.5px * var(--scale, 1)) calc(-2px * var(--scale, 1));
+    }
+
+    .style-dark .company-num {
+      background: #ffffff;
+      color: #111827;
+      font-weight: 900;
+      font-size: calc(8.5px * var(--scale, 1));
+      min-width: calc(15px * var(--scale, 1));
+      height: calc(13px * var(--scale, 1));
+      padding: 0 3px;
+      border-radius: 2px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .style-dark .company-name {
+      font-weight: 800;
+      font-size: calc(8.8px * var(--scale, 1));
+      text-transform: uppercase;
+      color: #ffffff;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    /* Estilo Clássico Referência (Selo preto + texto preto em negrito) */
+    .style-classic .company-header {
+      background: transparent;
+      color: #111827;
+      padding: 0;
+    }
+
+    .style-classic .company-num {
+      background: #18181b;
+      color: #ffffff;
+      font-weight: 900;
+      font-size: calc(8.5px * var(--scale, 1));
+      min-width: calc(16px * var(--scale, 1));
+      height: calc(13px * var(--scale, 1));
+      padding: 0 3px;
+      border-radius: 2.5px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .style-classic .company-name {
+      font-weight: 900;
+      font-size: calc(8.8px * var(--scale, 1));
+      text-transform: uppercase;
+      color: #111827;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    /* Lista de Vagas */
+    .jobs-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: calc(1.5px * var(--scale, 1));
+      margin-top: auto;
+      margin-bottom: auto;
+      width: 100%;
+    }
+
+    .jobs-list.two-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: calc(4px * var(--scale, 1));
+      row-gap: calc(1.5px * var(--scale, 1));
+      align-items: start;
+    }
+
+    .job-item {
+      font-size: calc(7.8px * var(--scale, 1));
+      font-weight: 500;
+      line-height: 1.16;
+      color: #1f2937;
+      text-transform: uppercase;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+    }
+
+    /* Bloco de QR Code embutido na grade (quando sobram células na última linha) */
+    .qr-grid-cell {
+      border-bottom: 1px solid #9ca3af;
+      padding: calc(4px * var(--scale, 1)) calc(12px * var(--scale, 1));
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: calc(12px * var(--scale, 1));
+      background: #ffffff;
+    }
+
+    /* Rodapé dedicado de QR Code (quando a última linha tem < 2 células livres) */
+    .sheet-footer {
+      border-top: 1.5px solid #6b7280;
+      padding: calc(4px * var(--scale, 1)) calc(12px * var(--scale, 1));
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      background: #ffffff;
+      flex-shrink: 0;
+    }
+
+    .qr-cta-box {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: calc(10px * var(--scale, 1));
+    }
+
+    .qr-cta-text {
+      text-align: center;
+      font-weight: 900;
+      font-size: calc(12.5px * var(--scale, 1));
+      line-height: 1.2;
+      color: #111827;
+      text-transform: uppercase;
+      max-width: 390px;
+    }
+
+    .qr-cta-url {
+      display: block;
+      font-size: calc(7.5px * var(--scale, 1));
+      font-weight: 600;
+      color: #4b5563;
+      text-transform: none;
+      margin-top: 2px;
+    }
+
+    .qr-arrow {
+      font-size: calc(22px * var(--scale, 1));
+      font-weight: 900;
+      color: #111827;
+      line-height: 1;
+    }
+
+    .qr-img {
+      width: calc(58px * var(--scale, 1));
+      height: calc(58px * var(--scale, 1));
+      min-width: 44px;
+      min-height: 44px;
+      object-fit: contain;
+      border: 1px solid #d1d5db;
+      padding: 2px;
+      background: #ffffff;
+      display: block;
+    }
+  </style>
+</head>
+<body class="style-{{ header_style }}">
+  <div id="pages-root"></div>
+
+  <script id="panel-payload" type="application/json">
+    {{ payload_json | safe }}
+  </script>
+
+  <script>
+    (function () {
+      const payload = JSON.parse(document.getElementById("panel-payload").textContent);
+      const companies = payload.companies || [];
+      const title = payload.title || "MUTIRÃO EMPREGA | CASA DO TRABALHADOR";
+      const logoDataUrl = payload.logo_data_url || "";
+      const qrDataUrl = payload.qr_data_url || "";
+      const publicUrl = payload.public_url || "";
+      const root = document.getElementById("pages-root");
+
+      function shouldUseTwoCols(jobs) {
+        if (!jobs || jobs.length < 5) return false;
+        const maxLen = Math.max(...jobs.map(j => j.length));
+        return maxLen <= 28;
+      }
+
+      function createCompanyCell(comp) {
+        const cell = document.createElement("div");
+        cell.className = "company-cell";
+
+        const header = document.createElement("div");
+        header.className = "company-header";
+
+        const num = document.createElement("span");
+        num.className = "company-num";
+        num.textContent = String(comp.number);
+
+        const name = document.createElement("span");
+        name.className = "company-name";
+        name.textContent = comp.name;
+
+        header.appendChild(num);
+        header.appendChild(name);
+        cell.appendChild(header);
+
+        const ul = document.createElement("ul");
+        const jobs = comp.jobs || [];
+        ul.className = "jobs-list" + (shouldUseTwoCols(jobs) ? " two-cols" : "");
+
+        jobs.forEach(job => {
+          const li = document.createElement("li");
+          li.className = "job-item";
+          li.textContent = job;
+          ul.appendChild(li);
+        });
+
+        cell.appendChild(ul);
+        return cell;
+      }
+
+      function createQrContent() {
+        const wrap = document.createElement("div");
+        wrap.className = "qr-cta-box";
+
+        const textDiv = document.createElement("div");
+        textDiv.className = "qr-cta-text";
+        textDiv.textContent = "ESCANEIE O QR CODE E ACESSE O PAINEL DE VAGAS PELO CELULAR!";
+        if (publicUrl) {
+          const urlSpan = document.createElement("span");
+          urlSpan.className = "qr-cta-url";
+          urlSpan.textContent = publicUrl;
+          textDiv.appendChild(urlSpan);
+        }
+
+        const arrow = document.createElement("div");
+        arrow.className = "qr-arrow";
+        arrow.textContent = "➔";
+
+        const img = document.createElement("img");
+        img.className = "qr-img";
+        img.src = qrDataUrl;
+        img.alt = "QR Code do Painel de Vagas";
+
+        wrap.appendChild(textDiv);
+        wrap.appendChild(arrow);
+        wrap.appendChild(img);
+        return wrap;
+      }
+
+      function buildSheet(sliceCompanies, scale, pageIndex, totalPages) {
+        const sheet = document.createElement("div");
+        sheet.className = "a4-sheet";
+        sheet.style.setProperty("--scale", String(scale));
+
+        // Header
+        const header = document.createElement("div");
+        header.className = "sheet-header";
+
+        const logoWrap = document.createElement("div");
+        logoWrap.className = "header-logo-wrap";
+        if (logoDataUrl) {
+          const logoImg = document.createElement("img");
+          logoImg.src = logoDataUrl;
+          logoImg.alt = "Logotipo Institucional";
+          logoWrap.appendChild(logoImg);
+        }
+
+        const titleWrap = document.createElement("div");
+        titleWrap.className = "header-title-wrap";
+        const h1 = document.createElement("div");
+        h1.className = "header-title";
+        h1.textContent = title;
+        titleWrap.appendChild(h1);
+
+        const rightSpacer = document.createElement("div");
+        rightSpacer.className = "header-right-spacer";
+        if (totalPages > 1) {
+          rightSpacer.textContent = "PÁGINA " + pageIndex + " DE " + totalPages;
+        }
+
+        header.appendChild(logoWrap);
+        header.appendChild(titleWrap);
+        header.appendChild(rightSpacer);
+        sheet.appendChild(header);
+
+        // Grid Body
+        const grid = document.createElement("div");
+        grid.className = "grid-body";
+
+        sliceCompanies.forEach(c => {
+          grid.appendChild(createCompanyCell(c));
+        });
+
+        const remainder = sliceCompanies.length % 7;
+        const freeCols = remainder === 0 ? 0 : (7 - remainder);
+
+        if (freeCols >= 2 && sliceCompanies.length > 0) {
+          const qrCell = document.createElement("div");
+          qrCell.className = "qr-grid-cell";
+          qrCell.style.gridColumn = "span " + freeCols;
+          qrCell.appendChild(createQrContent());
+          grid.appendChild(qrCell);
+          sheet.appendChild(grid);
+        } else {
+          sheet.appendChild(grid);
+          const footer = document.createElement("div");
+          footer.className = "sheet-footer";
+          footer.appendChild(createQrContent());
+          sheet.appendChild(footer);
+        }
+
+        return sheet;
+      }
+
+      function doesSheetOverflow(sheet) {
+        // Verifica se a folha ou alguma célula ultrapassa a altura disponível
+        if (sheet.scrollHeight > sheet.clientHeight + 2) {
+          return true;
+        }
+        const cells = sheet.querySelectorAll(".company-cell");
+        for (let i = 0; i < cells.length; i++) {
+          if (cells[i].scrollHeight > cells[i].clientHeight + 2) {
+            return true;
+          }
+        }
+        return false;
+      }
+
+      // 1. Tenta manter tudo em uma única página ajustando a escala dentro dos limites legíveis
+      // Escala de 1.35 (poucas empresas) até 0.72 (mínimo legível para ~65 empresas em 1 página A4)
+      const scales = [1.30, 1.18, 1.08, 1.0, 0.94, 0.88, 0.83, 0.78, 0.74, 0.70];
+      let fittedSinglePage = false;
+
+      if (companies.length <= 70) {
+        for (const scale of scales) {
+          root.innerHTML = "";
+          const testSheet = buildSheet(companies, scale, 1, 1);
+          root.appendChild(testSheet);
+          if (!doesSheetOverflow(testSheet)) {
+            fittedSinglePage = true;
+            break;
+          }
+        }
+      }
+
+      // 2. Se não couber com boa leitura em 1 página, divide automaticamente em páginas adicionais
+      // mantendo cabeçalho, organização em 7 colunas e QR Code em todas as páginas
+      if (!fittedSinglePage) {
+        const multiPageScale = 0.86;
+        // Descobre quantas linhas (múltiplos de 7 empresas) cabem confortavelmente por página
+        const pagesSlices = [];
+        let cursor = 0;
+
+        while (cursor < companies.length) {
+          let bestCount = 7; // mínimo 1 linha de 7 empresas por página
+          // Testa de 8 linhas (56 empresas) até 2 linhas (14 empresas)
+          for (let candidateRows = 8; candidateRows >= 1; candidateRows--) {
+            const count = candidateRows * 7;
+            const candidateSlice = companies.slice(cursor, cursor + count);
+            root.innerHTML = "";
+            const testSheet = buildSheet(candidateSlice, multiPageScale, 1, 2);
+            root.appendChild(testSheet);
+            if (!doesSheetOverflow(testSheet)) {
+              bestCount = candidateSlice.length;
+              break;
+            }
+          }
+          pagesSlices.push(companies.slice(cursor, cursor + bestCount));
+          cursor += bestCount;
+        }
+
+        root.innerHTML = "";
+        pagesSlices.forEach((slice, idx) => {
+          const sheet = buildSheet(slice, multiPageScale, idx + 1, pagesSlices.length);
+          root.appendChild(sheet);
+        });
+      }
+
+      window.__PDF_LAYOUT_READY__ = true;
+    })();
+  </script>
+</body>
+</html>

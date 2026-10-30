@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel de Vagas — Agência do Trabalhador</title>
+  <link rel="stylesheet" href="/static/css/admin.css" />
+</head>
+<body>
+  <!-- Cabeçalho do Sistema -->
+  <header class="app-topbar">
+    <div class="topbar-inner">
+      <div class="brand-group">
+        <div class="brand-flag" aria-hidden="true"></div>
+        <div class="brand-titles">
+          <h1>Painel de Vagas — Agência do Trabalhador</h1>
+          <p>Sistema de Geração Automatizada de Painéis para Mutirões de Emprego de Curitiba</p>
+        </div>
+      </div>
+
+      <div class="topbar-actions">
+        <button type="button" id="btn-zoom" class="btn btn-outline-light">
+          🔍 AMPLIAR PAINEL
+        </button>
+        <button type="button" id="btn-publish" class="btn btn-publish">
+          🌐 PUBLICAR PAINEL
+        </button>
+        <button type="button" id="btn-export-pdf" class="btn btn-pdf">
+          📄 EXPORTAR PDF
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <!-- ÁREA 1: CONFIGURAÇÃO E INSERÇÃO DAS VAGAS -->
+    <section class="section-card" aria-labelledby="area1-heading">
+      <div class="section-header">
+        <div class="section-title-group">
+          <span class="step-badge">Área 1</span>
+          <h2 class="section-title" id="area1-heading">Configuração e Inserção das Empresas e Vagas</h2>
+        </div>
+
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button type="button" id="btn-load-sample-65" class="btn btn-secondary">
+            📋 Carregar Modelo Completo (65 Empresas)
+          </button>
+          <button type="button" id="btn-new-panel" class="btn btn-secondary" title="Iniciar um novo painel com novo link público">
+            ➕ Novo Painel
+          </button>
+        </div>
+      </div>
+
+      <div class="section-body">
+        <div class="config-grid">
+          <!-- Coluna Esquerda: Título e Caixa de Texto Única -->
+          <div class="editor-column">
+            <div class="form-group">
+              <div class="form-label-row">
+                <label for="panel-title-input" class="form-label">Título do Painel</label>
+                <span class="form-hint">Atualiza em tempo real na pré-visualização e no PDF</span>
+              </div>
+              <input
+                type="text"
+                id="panel-title-input"
+                class="text-input"
+                value="MUTIRÃO EMPREGA + [NOME DO EVENTO] | CASA DO TRABALHADOR"
+                placeholder="Ex.: MUTIRÃO EMPREGA + PINHEIRINHO | CASA DO TRABALHADOR"
+              />
+            </div>
+
+            <div class="form-group">
+              <div class="form-label-row">
+                <label for="vagas-textarea" class="form-label">
+                  Lista de Empresas e Vagas (Campo Único)
+                </label>
+                <span class="form-hint">
+                  1ª linha do bloco = Empresa | Linhas seguintes = Vagas | Linha em branco = Nova empresa
+                </span>
+              </div>
+              <textarea
+                id="vagas-textarea"
+                class="vagas-textarea"
+                spellcheck="false"
+                placeholder="Digite ou cole aqui todas as empresas e vagas...&#10;&#10;EMPRESA A&#10;Auxiliar Administrativo&#10;Operador de Caixa&#10;&#10;EMPRESA B&#10;Auxiliar de Produção&#10;Operador de Máquinas"
+              >{{ initial_raw_text }}</textarea>
+
+              <div class="textarea-toolbar">
+                <span class="form-hint">
+                  Dica: Cole diretamente do Word, Excel, WhatsApp ou e-mail. Espaços extras e linhas vazias repetidas são tratados automaticamente.
+                </span>
+                <button type="button" id="btn-clear" class="btn btn-danger-outline">
+                  🗑️ LIMPAR CAMPO
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Coluna Direita: Contadores, Personalização do Logotipo e Status Público -->
+          <div class="side-controls">
+            <!-- Indicadores de Quantidade -->
+            <div class="counters-grid">
+              <div class="counter-box">
+                <span class="counter-value" id="count-companies">0</span>
+                <span class="counter-label">Empresas Identificadas</span>
+              </div>
+              <div class="counter-box highlight">
+                <span class="counter-value" id="count-jobs">0</span>
+                <span class="counter-label">Vagas Identificadas</span>
+              </div>
+            </div>
+
+            <!-- Personalização de Logotipo e Cabeçalho das Células -->
+            <div class="sub-card">
+              <div class="sub-card-title">
+                <span>Identidade Visual e Logotipo</span>
+              </div>
+              <div class="logo-control-row">
+                <div class="logo-thumb-box" title="Logotipo atual do cabeçalho">
+                  <img id="logo-thumb-img" src="{{ default_logo_data_url }}" alt="Miniatura do Logotipo" />
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 6px; flex: 1;">
+                  <input type="file" id="logo-file-input" accept="image/*" style="display: none;" />
+                  <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                    <button type="button" id="btn-upload-logo" class="btn btn-secondary" style="padding: 7px 12px; font-size: 12.5px;">
+                      🖼️ Adicionar / Substituir Logotipo
+                    </button>
+                    <button type="button" id="btn-reset-logo" class="btn btn-secondary" style="padding: 7px 12px; font-size: 12.5px; display: none;">
+                      Restaurar Padrão
+                    </button>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
+                    <label for="header-style-select" style="font-size: 12px; font-weight: 700; color: #475569;">Destaque da Empresa:</label>
+                    <select id="header-style-select" style="font-size: 12px; padding: 4px 8px; border-radius: 4px; border: 1px solid #cbd5e1;">
+                      <option value="dark" selected>Faixa Escura com Texto Branco (Padrão)</option>
+                      <option value="classic">Clássico (Selo Escuro + Fundo Claro)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Publicação e Acesso pelo Celular (QR Code) -->
+            <div class="publish-status-card">
+              <div class="publish-status-header">
+                <span style="font-size: 13px; font-weight: 800; color: #14532d; text-transform: uppercase;">
+                  Acesso Público &amp; QR Code
+                </span>
+                <span id="publish-status-badge" class="status-badge">Painel Publicado</span>
+              </div>
+              <p style="font-size: 12px; color: #166534; margin-bottom: 6px;">
+                Ao republicar alterações, o endereço público abaixo permanece o mesmo e o QR Code continua funcionando.
+              </p>
+              <div class="public-url-row">
+                <input
+                  type="text"
+                  id="public-url-input"
+                  class="public-url-input"
+                  readonly
+                  value="{{ initial_public_url }}"
+                  aria-label="Endereço público do painel"
+                />
+                <button type="button" id="btn-copy-url" class="btn btn-secondary" style="padding: 6px 10px; font-size: 12px;">
+                  Copiar
+                </button>
+                <a
+                  id="btn-open-public"
+                  href="{{ initial_public_url }}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="btn btn-secondary"
+                  style="padding: 6px 10px; font-size: 12px;"
+                >
+                  Abrir ↗
+                </a>
+              </div>
+            </div>
+
+            <!-- Regras rápidas -->
+            <div class="sub-card">
+              <div class="sub-card-title">Como preencher rapidamente</div>
+              <ul class="rules-list">
+                <li><strong>1ª linha do bloco:</strong> Nome da empresa.</li>
+                <li><strong>Linhas abaixo:</strong> Cada linha é uma vaga daquela empresa.</li>
+                <li><strong>Linha em branco (2x ENTER):</strong> Inicia uma nova empresa.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ÁREA 2: PRÉ-VISUALIZAÇÃO EM TEMPO REAL DO PAINEL -->
+    <section class="section-card" aria-labelledby="area2-heading">
+      <div class="section-header">
+        <div class="section-title-group">
+          <span class="step-badge">Área 2</span>
+          <h2 class="section-title" id="area2-heading">Pré-Visualização em Tempo Real do Painel (Grade 7 Colunas — Formato A4 Paisagem)</h2>
+        </div>
+
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <span class="form-hint">Espelho fiel da impressão e do PDF</span>
+        </div>
+      </div>
+
+      <div class="section-body">
+        <div class="preview-wrapper">
+          <div id="preview-board" class="panel-board style-dark">
+            <!-- Cabeçalho Institucional do Painel -->
+            <div class="panel-header">
+              <div class="panel-logo-container">
+                <img id="preview-logo-img" src="{{ default_logo_data_url }}" alt="Logotipo Institucional" />
+              </div>
+              <div class="panel-title-container">
+                <div id="preview-main-title" class="panel-main-title">
+                  MUTIRÃO EMPREGA + [NOME DO EVENTO] | CASA DO TRABALHADOR
+                </div>
+              </div>
+              <div class="panel-header-spacer"></div>
+            </div>
+
+            <!-- Grade Automática de 7 Colunas -->
+            <div id="preview-grid" class="panel-grid"></div>
+
+            <!-- Container de Rodapé QR Code (usado quando a última linha da grade está cheia) -->
+            <div id="preview-footer-container"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal de Confirmação para Limpar Campo -->
+  <div id="confirm-clear-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="confirm-clear-title">
+    <div class="confirm-modal-content">
+      <h3 class="confirm-modal-title" id="confirm-clear-title">Confirmar limpeza dos dados?</h3>
+      <p class="confirm-modal-desc">
+        Tem certeza de que deseja apagar todas as empresas e vagas digitadas no campo de inserção?
+      </p>
+      <div class="confirm-modal-actions">
+        <button type="button" id="btn-confirm-clear-no" class="btn btn-secondary">
+          Cancelar
+        </button>
+        <button type="button" id="btn-confirm-clear-yes" class="btn btn-pdf">
+          Sim, Limpar Campo
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Visualização em Tamanho Ampliado -->
+  <div id="zoom-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="zoom-modal-title">
+    <div class="zoom-modal-content">
+      <div class="zoom-modal-header">
+        <strong id="zoom-modal-title">Visualização Ampliada do Painel de Vagas</strong>
+        <button type="button" id="btn-close-zoom" class="btn btn-outline-light" style="padding: 6px 14px;">
+          ✕ Fechar Visualização Ampliada
+        </button>
+      </div>
+      <div id="zoom-modal-body" class="zoom-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Toast de Notificação -->
+  <div id="toast-notification" class="toast-notification" role="status" aria-live="polite"></div>
+
+  <!-- Dados iniciais injetados pelo servidor -->
+  <script id="initial-boot-data" type="application/json">
+    {{ boot_json | safe }}
+  </script>
+
+  <script src="/static/js/parser.js"></script>
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

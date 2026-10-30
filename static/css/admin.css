@@ -1,0 +1,827 @@
+/* ==========================================================================
+   SISTEMA DE CRIAÇÃO DE PAINEL DE VAGAS — AGÊNCIA DO TRABALHADOR DE CURITIBA
+   Identidade visual institucional (Governo do Paraná / Secretaria do Trabalho)
+   ========================================================================== */
+
+:root {
+  --bg-body: #f1f5f9;
+  --bg-surface: #ffffff;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --border-light: #e2e8f0;
+  --border-medium: #cbd5e1;
+  --pr-dark: #18202c;
+  --pr-red: #c8102e;
+  --pr-red-hover: #a50d26;
+  --pr-green: #007a33;
+  --pr-green-hover: #006128;
+  --pr-blue: #1e3a8a;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  background-color: var(--bg-body);
+  color: var(--text-primary);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Cabeçalho Superior do Sistema */
+.app-topbar {
+  background: var(--pr-dark);
+  color: #ffffff;
+  border-bottom: 4px solid var(--pr-red);
+  padding: 14px 24px;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+}
+
+.topbar-inner {
+  max-width: 1480px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.brand-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-flag {
+  width: 6px;
+  height: 36px;
+  background: linear-gradient(180deg, var(--pr-green) 0%, #ffffff 50%, var(--pr-red) 100%);
+  border-radius: 3px;
+}
+
+.brand-titles h1 {
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  color: #ffffff;
+}
+
+.brand-titles p {
+  font-size: 12.5px;
+  color: #cbd5e1;
+  font-weight: 500;
+}
+
+.topbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Botões */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-pdf {
+  background: var(--pr-red);
+  color: #ffffff;
+  font-size: 14px;
+  padding: 11px 20px;
+  box-shadow: 0 2px 6px rgba(200, 16, 46, 0.35);
+}
+
+.btn-pdf:hover:not(:disabled) {
+  background: var(--pr-red-hover);
+}
+
+.btn-publish {
+  background: var(--pr-green);
+  color: #ffffff;
+  font-size: 14px;
+  padding: 11px 20px;
+  box-shadow: 0 2px 6px rgba(0, 122, 51, 0.3);
+}
+
+.btn-publish:hover:not(:disabled) {
+  background: var(--pr-green-hover);
+}
+
+.btn-secondary {
+  background: #ffffff;
+  color: var(--text-primary);
+  border-color: var(--border-medium);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #f8fafc;
+  border-color: #94a3b8;
+}
+
+.btn-outline-light {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.btn-outline-light:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.btn-danger-outline {
+  background: #fff1f2;
+  color: #be123c;
+  border-color: #fecdd3;
+}
+
+.btn-danger-outline:hover:not(:disabled) {
+  background: #ffe4e6;
+  border-color: #fda4af;
+}
+
+/* Container Principal */
+.main-container {
+  max-width: 1480px;
+  margin: 22px auto 48px;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Cartões de Área */
+.section-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.section-header {
+  background: #f8fafc;
+  border-bottom: 1px solid var(--border-light);
+  padding: 14px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.section-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.step-badge {
+  background: var(--pr-dark);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 3px 9px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.section-body {
+  padding: 20px;
+}
+
+/* Área 1: Grade de Configuração */
+.config-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+@media (min-width: 1024px) {
+  .config-grid {
+    grid-template-columns: 1.35fr 0.65fr;
+    align-items: start;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+.form-label-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.form-label {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.form-hint {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+
+.text-input {
+  width: 100%;
+  padding: 11px 14px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  background: #ffffff;
+  border: 1.5px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.text-input:focus,
+.vagas-textarea:focus {
+  border-color: var(--pr-dark);
+  box-shadow: 0 0 0 3px rgba(24, 32, 44, 0.1);
+}
+
+.vagas-textarea {
+  width: 100%;
+  min-height: 290px;
+  padding: 14px;
+  font-family: "JetBrains Mono", "Cascadia Code", Consolas, monospace;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--text-primary);
+  background: #ffffff;
+  border: 1.5px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  resize: vertical;
+  outline: none;
+}
+
+.textarea-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+/* Painel Lateral de Indicadores, Logotipo e Publicação */
+.side-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.counters-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.counter-box {
+  background: #f8fafc;
+  border: 1.5px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.counter-value {
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--pr-dark);
+  line-height: 1.1;
+}
+
+.counter-box.highlight .counter-value {
+  color: var(--pr-red);
+}
+
+.counter-label {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.sub-card {
+  background: #f8fafc;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+}
+
+.sub-card-title {
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rules-list {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  padding-left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.logo-control-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.logo-thumb-box {
+  background: #dcdcdc;
+  border: 1px solid #94a3b8;
+  border-radius: 4px;
+  padding: 6px 10px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-thumb-box img {
+  max-height: 36px;
+  max-width: 130px;
+  object-fit: contain;
+}
+
+/* Card de Status da Publicação e QR Code */
+.publish-status-card {
+  background: #f0fdf4;
+  border: 1.5px solid #86efac;
+  border-radius: var(--radius-sm);
+  padding: 14px;
+}
+
+.publish-status-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 99px;
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-badge.draft {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.public-url-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.public-url-input {
+  flex: 1;
+  font-size: 12px;
+  font-family: monospace;
+  padding: 7px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  background: #ffffff;
+  color: #0f172a;
+}
+
+/* ==========================================================================
+   ÁREA 2: PRÉ-VISUALIZAÇÃO EM TEMPO REAL DO PAINEL (7 COLUNAS)
+   ========================================================================== */
+
+.preview-wrapper {
+  background: #cbd5e1;
+  padding: 18px;
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+}
+
+.panel-board {
+  background: #ffffff;
+  border: 2px solid #4b5563;
+  width: 100%;
+  min-width: 980px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  transition: all 0.15s ease;
+}
+
+/* Cabeçalho Institucional do Painel */
+.panel-header {
+  background: #dcdcdc;
+  border-bottom: 2px solid #6b7280;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 68px;
+}
+
+.panel-logo-container {
+  width: 220px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.panel-logo-container img {
+  max-height: 54px;
+  max-width: 100%;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.panel-title-container {
+  flex: 1;
+  text-align: center;
+}
+
+.panel-main-title {
+  font-size: calc(22px * var(--preview-scale, 1));
+  font-weight: 900;
+  text-transform: uppercase;
+  color: #090d16;
+  letter-spacing: 0.4px;
+  line-height: 1.15;
+}
+
+.panel-header-spacer {
+  width: 120px;
+  flex-shrink: 0;
+  text-align: right;
+  font-size: 11px;
+  font-weight: 700;
+  color: #4b5563;
+}
+
+/* Grade de 7 Colunas das Empresas */
+.panel-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  width: 100%;
+  background: #ffffff;
+}
+
+.panel-cell {
+  border-right: 1px solid #9ca3af;
+  border-bottom: 1px solid #9ca3af;
+  padding: calc(6px * var(--preview-scale, 1)) calc(7px * var(--preview-scale, 1));
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  background: #ffffff;
+  min-width: 0;
+}
+
+.panel-cell:nth-child(7n) {
+  border-right: none;
+}
+
+/* Cabeçalho da Empresa — Faixa Escura com Texto Branco (Padrão) */
+.panel-cell-header {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 5px;
+  line-height: 1.15;
+}
+
+.panel-board.style-dark .panel-cell-header {
+  background: #18202c;
+  color: #ffffff;
+  padding: 4px 6px;
+  border-radius: 2px;
+  margin: -3px -3px 5px -3px;
+}
+
+.panel-board.style-dark .panel-cell-num {
+  background: #ffffff;
+  color: #111827;
+  font-weight: 900;
+  font-size: calc(10.5px * var(--preview-scale, 1));
+  min-width: 18px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.panel-board.style-dark .panel-cell-name {
+  font-weight: 800;
+  font-size: calc(11px * var(--preview-scale, 1));
+  text-transform: uppercase;
+  color: #ffffff;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* Estilo Clássico Referência (Selo preto + texto preto em negrito) */
+.panel-board.style-classic .panel-cell-header {
+  background: transparent;
+  color: #111827;
+  padding: 0;
+}
+
+.panel-board.style-classic .panel-cell-num {
+  background: #18181b;
+  color: #ffffff;
+  font-weight: 900;
+  font-size: calc(10.5px * var(--preview-scale, 1));
+  min-width: 19px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.panel-board.style-classic .panel-cell-name {
+  font-weight: 900;
+  font-size: calc(11px * var(--preview-scale, 1));
+  text-transform: uppercase;
+  color: #111827;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* Vagas dentro da célula */
+.panel-jobs-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: auto;
+  margin-bottom: auto;
+  width: 100%;
+}
+
+.panel-jobs-list.two-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 6px;
+  row-gap: 2px;
+  align-items: start;
+}
+
+.panel-job-item {
+  font-size: calc(10px * var(--preview-scale, 1));
+  font-weight: 500;
+  line-height: 1.22;
+  color: #1f2937;
+  text-transform: uppercase;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* Célula / Rodapé de QR Code no Painel */
+.panel-qr-inline-cell {
+  border-bottom: 1px solid #9ca3af;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  background: #ffffff;
+}
+
+.panel-footer-bar {
+  border-top: 1px solid #6b7280;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  background: #ffffff;
+}
+
+.panel-qr-box {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 14px;
+}
+
+.panel-qr-text {
+  text-align: center;
+  font-weight: 900;
+  font-size: calc(15px * var(--preview-scale, 1));
+  line-height: 1.2;
+  color: #111827;
+  text-transform: uppercase;
+  max-width: 460px;
+}
+
+.panel-qr-sub {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #4b5563;
+  text-transform: none;
+  margin-top: 3px;
+}
+
+.panel-qr-arrow {
+  font-size: 28px;
+  font-weight: 900;
+  color: #111827;
+  line-height: 1;
+}
+
+.panel-qr-img {
+  width: 74px;
+  height: 74px;
+  object-fit: contain;
+  border: 1px solid #cbd5e1;
+  padding: 2px;
+  background: #ffffff;
+}
+
+.panel-empty-state {
+  grid-column: span 7;
+  padding: 48px 20px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 15px;
+}
+
+/* Modal de Tela Ampliada e Modal de Confirmação */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.78);
+  z-index: 100;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-backdrop.open {
+  display: flex;
+}
+
+.zoom-modal-content {
+  background: #f8fafc;
+  width: 98vw;
+  max-height: 95vh;
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+}
+
+.zoom-modal-header {
+  background: var(--pr-dark);
+  color: #ffffff;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.zoom-modal-body {
+  padding: 20px;
+  overflow: auto;
+  flex: 1;
+}
+
+.confirm-modal-content {
+  background: #ffffff;
+  max-width: 440px;
+  width: 100%;
+  border-radius: var(--radius-md);
+  padding: 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+}
+
+.confirm-modal-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.confirm-modal-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+}
+
+.confirm-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* Notificação Toast */
+.toast-notification {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  z-index: 120;
+  transform: translateY(120%);
+  opacity: 0;
+  transition: all 0.25s ease;
+}
+
+.toast-notification.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.toast-notification.success {
+  border-left: 5px solid #22c55e;
+}
+
+.toast-notification.error {
+  border-left: 5px solid #ef4444;
+}
