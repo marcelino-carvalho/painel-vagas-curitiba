@@ -38,12 +38,18 @@ def init_db() -> None:
                 total_companies INTEGER NOT NULL DEFAULT 0,
                 total_jobs INTEGER NOT NULL DEFAULT 0,
                 logo_data_url TEXT,
+                right_logo_data_url TEXT,
                 header_style TEXT NOT NULL DEFAULT 'dark',
                 created_at TEXT NOT NULL,
                 updated_at TEXT NOT NULL
             )
             """
         )
+        # Migração automática segura caso a tabela já exista sem a coluna right_logo_data_url
+        cols = [r["name"] for r in conn.execute("PRAGMA table_info(panels)").fetchall()]
+        if "right_logo_data_url" not in cols:
+            conn.execute("ALTER TABLE panels ADD COLUMN right_logo_data_url TEXT")
+
         conn.execute(
             """
             CREATE TABLE IF NOT EXISTS settings (
@@ -96,6 +102,7 @@ def save_or_update_panel(
     raw_text: str,
     slug: Optional[str] = None,
     logo_data_url: Optional[str] = None,
+    right_logo_data_url: Optional[str] = None,
     header_style: str = "dark",
 ) -> Dict[str, Any]:
     """
@@ -115,6 +122,14 @@ def save_or_update_panel(
 
         if existing:
             final_logo = logo_data_url if logo_data_url is not None else existing["logo_data_url"]
+            # Para right_logo_data_url: string vazia "" remove a logo direita; None mantém; data:... substitui
+            if right_logo_data_url == "":
+                final_right_logo = None
+            elif right_logo_data_url is not None:
+                final_right_logo = right_logo_data_url
+            else:
+                final_right_logo = existing["right_logo_data_url"]
+
             conn.execute(
                 """
                 UPDATE panels
@@ -124,6 +139,7 @@ def save_or_update_panel(
                     total_companies = ?,
                     total_jobs = ?,
                     logo_data_url = ?,
+                    right_logo_data_url = ?,
                     header_style = ?,
                     updated_at = ?
                 WHERE slug = ?
@@ -135,6 +151,7 @@ def save_or_update_panel(
                     parsed["total_companies"],
                     parsed["total_jobs"],
                     final_logo,
+                    final_right_logo,
                     header_style or existing["header_style"] or "dark",
                     now_iso,
                     existing["slug"],
@@ -144,14 +161,15 @@ def save_or_update_panel(
             target_slug = existing["slug"]
         else:
             target_slug = slug.strip() if (slug and slug.strip()) else generate_unique_slug(clean_title, conn)
+            final_right_logo = right_logo_data_url if right_logo_data_url else None
             conn.execute(
                 """
                 INSERT INTO panels (
                     slug, title, raw_text, companies_json,
                     total_companies, total_jobs, logo_data_url,
-                    header_style, created_at, updated_at
+                    right_logo_data_url, header_style, created_at, updated_at
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     target_slug,
@@ -161,6 +179,7 @@ def save_or_update_panel(
                     parsed["total_companies"],
                     parsed["total_jobs"],
                     logo_data_url,
+                    final_right_logo,
                     header_style or "dark",
                     now_iso,
                     now_iso,
@@ -199,6 +218,7 @@ def _row_to_dict(row: sqlite3.Row) -> Dict[str, Any]:
         "total_companies": row["total_companies"],
         "total_jobs": row["total_jobs"],
         "logo_data_url": row["logo_data_url"],
+        "right_logo_data_url": row["right_logo_data_url"] if "right_logo_data_url" in row.keys() else None,
         "header_style": row["header_style"] or "dark",
         "created_at": row["created_at"],
         "updated_at": row["updated_at"],

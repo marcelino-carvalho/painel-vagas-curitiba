@@ -294,6 +294,13 @@
         <span class="inst-badge">Agência do Trabalhador de Curitiba</span>
         <h1 class="inst-title" id="public-panel-title">{{ panel.title }}</h1>
       </div>
+      {% if panel.right_logo_data_url %}
+      <img
+        src="{{ panel.right_logo_data_url }}"
+        alt="Logotipo Direito"
+        class="inst-logo"
+      />
+      {% endif %}
     </div>
   </header>
 

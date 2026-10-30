@@ -139,6 +139,7 @@ class PublishPanelRequest(BaseModel):
     raw_text: str
     slug: Optional[str] = None
     logo_data_url: Optional[str] = None
+    right_logo_data_url: Optional[str] = None
     header_style: str = "dark"
 
 
@@ -233,6 +234,7 @@ async def api_publish_panel(request: Request, payload: PublishPanelRequest):
         raw_text=payload.raw_text,
         slug=payload.slug,
         logo_data_url=payload.logo_data_url,
+        right_logo_data_url=payload.right_logo_data_url,
         header_style=payload.header_style,
     )
 
@@ -274,6 +276,7 @@ async def api_export_panel_pdf(request: Request, slug: str):
         companies=panel["companies"],
         public_url=public_url,
         logo_data_url=panel["logo_data_url"],
+        right_logo_data_url=panel.get("right_logo_data_url"),
         header_style=panel["header_style"],
     )
 

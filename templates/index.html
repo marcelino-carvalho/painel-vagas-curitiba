@@ -132,33 +132,57 @@
               </p>
             </div>
 
-            <!-- Personalização de Logotipo e Cabeçalho das Células -->
+            <!-- Personalização de Logotipos (Esquerda e Direita) e Cabeçalho das Células -->
             <div class="sub-card">
               <div class="sub-card-title">
-                <span>Identidade Visual e Logotipo do PDF</span>
+                <span>Identidade Visual e Logotipos do PDF</span>
               </div>
-              <div class="logo-control-row">
-                <div class="logo-thumb-box" title="Logotipo atual do cabeçalho do PDF">
-                  <img id="logo-thumb-img" src="{{ default_logo_data_url }}" alt="Miniatura do Logotipo" />
+
+              <!-- Logo Esquerda (Padrão: Governo do Paraná) -->
+              <div class="logo-control-row" style="margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px dashed #cbd5e1;">
+                <div class="logo-thumb-box" title="Logotipo do lado esquerdo do cabeçalho" style="min-width: 110px;">
+                  <img id="logo-thumb-img" src="{{ default_logo_data_url }}" alt="Miniatura Logo Esquerda" />
                 </div>
-                <div style="display: flex; flex-direction: column; gap: 6px; flex: 1;">
+                <div style="display: flex; flex-direction: column; gap: 4px; flex: 1;">
+                  <span style="font-size: 11.5px; font-weight: 800; color: #334155;">Logo Esquerda (Padrão Paraná)</span>
                   <input type="file" id="logo-file-input" accept="image/*" style="display: none;" />
                   <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-                    <button type="button" id="btn-upload-logo" class="btn btn-secondary" style="padding: 7px 12px; font-size: 12.5px;">
-                      🖼️ Adicionar / Substituir Logotipo
+                    <button type="button" id="btn-upload-logo" class="btn btn-secondary" style="padding: 6px 10px; font-size: 12px;">
+                      🖼️ Substituir Logo Esquerda
                     </button>
-                    <button type="button" id="btn-reset-logo" class="btn btn-secondary" style="padding: 7px 12px; font-size: 12.5px; display: none;">
+                    <button type="button" id="btn-reset-logo" class="btn btn-secondary" style="padding: 6px 10px; font-size: 12px; display: none;">
                       Restaurar Padrão
                     </button>
                   </div>
-                  <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
-                    <label for="header-style-select" style="font-size: 12px; font-weight: 700; color: #475569;">Destaque da Empresa:</label>
-                    <select id="header-style-select" style="font-size: 12px; padding: 4px 8px; border-radius: 4px; border: 1px solid #cbd5e1;">
-                      <option value="dark" selected>Faixa Escura com Texto Branco (Padrão)</option>
-                      <option value="classic">Clássico (Selo Escuro + Fundo Claro)</option>
-                    </select>
+                </div>
+              </div>
+
+              <!-- Logo Direita (Opcional — Padrão: Sem Logo) -->
+              <div class="logo-control-row" style="margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px dashed #cbd5e1;">
+                <div class="logo-thumb-box" title="Logotipo opcional do lado direito do cabeçalho" style="min-width: 110px;">
+                  <span id="right-logo-empty-label" style="font-size: 11px; font-weight: 700; color: #64748b;">Sem logo</span>
+                  <img id="right-logo-thumb-img" src="" alt="Miniatura Logo Direita" style="display: none;" />
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 4px; flex: 1;">
+                  <span style="font-size: 11.5px; font-weight: 800; color: #334155;">Logo Direita (Opcional)</span>
+                  <input type="file" id="right-logo-file-input" accept="image/*" style="display: none;" />
+                  <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                    <button type="button" id="btn-upload-right-logo" class="btn btn-secondary" style="padding: 6px 10px; font-size: 12px;">
+                      ➕ Adicionar Logo Direita
+                    </button>
+                    <button type="button" id="btn-remove-right-logo" class="btn btn-danger-outline" style="padding: 6px 10px; font-size: 12px; display: none;">
+                      Remover
+                    </button>
                   </div>
                 </div>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <label for="header-style-select" style="font-size: 12px; font-weight: 700; color: #475569;">Destaque da Empresa:</label>
+                <select id="header-style-select" style="font-size: 12px; padding: 4px 8px; border-radius: 4px; border: 1px solid #cbd5e1; flex: 1;">
+                  <option value="dark" selected>Faixa Escura com Texto Branco (Padrão)</option>
+                  <option value="classic">Clássico (Selo Escuro + Fundo Claro)</option>
+                </select>
               </div>
             </div>
 
@@ -238,7 +262,9 @@
                   MUTIRÃO EMPREGA + [NOME DO EVENTO] | CASA DO TRABALHADOR
                 </div>
               </div>
-              <div class="panel-header-spacer"></div>
+              <div class="panel-header-spacer">
+                <img id="preview-right-logo-img" src="" alt="Logotipo Direito" style="display: none;" />
+              </div>
             </div>
 
             <!-- Grade Automática de 7 Colunas -->

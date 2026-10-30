@@ -264,6 +264,7 @@ def _draw_sheet(
     qr_reader: ImageReader,
     public_url: str,
     custom_logo: Optional[ImageReader],
+    right_logo: Optional[ImageReader],
     header_style: str,
     page_idx: int,
     total_pages: int,
@@ -296,6 +297,19 @@ def _draw_sheet(
     else:
         _draw_default_parana_logo(c, x0 + 4.0 * scale, header_bottom, header_h, scale)
 
+    # Logotipo opcional à direita
+    if right_logo:
+        c.drawImage(
+            right_logo,
+            x0 + SHEET_W - logo_area_w + 4.0 * scale,
+            header_bottom + 3.0 * scale,
+            width=logo_area_w - 10.0 * scale,
+            height=header_h - 6.0 * scale,
+            preserveAspectRatio=True,
+            anchor="e",
+            mask="auto",
+        )
+
     # Título centralizado
     title_max_w = SHEET_W - 2 * logo_area_w
     title_font = 13.5 * scale
@@ -314,9 +328,10 @@ def _draw_sheet(
 
     # Indicador de página quando houver múltiplas páginas
     if total_pages > 1:
-        c.setFont("Helvetica-Bold", 6.5 * scale)
+        c.setFont("Helvetica-Bold", 6.0 * scale)
         c.setFillColor(colors.HexColor("#374151"))
-        c.drawRightString(x0 + SHEET_W - 8.0 * scale, header_bottom + header_h / 2.0 - 2.5, f"PÁGINA {page_idx} DE {total_pages}")
+        page_label_x = (x0 + SHEET_W - logo_area_w - 4.0 * scale) if right_logo else (x0 + SHEET_W - 8.0 * scale)
+        c.drawRightString(page_label_x, header_bottom + 4.0 * scale, f"PÁGINA {page_idx} DE {total_pages}")
 
     # 2. Grade de 7 Colunas
     col_w = SHEET_W / float(COLS)
@@ -493,6 +508,7 @@ def generate_panel_pdf_sync(
     companies: List[Dict[str, Any]],
     public_url: str,
     logo_data_url: Optional[str] = None,
+    right_logo_data_url: Optional[str] = None,
     header_style: str = "dark",
 ) -> bytes:
     """Gera o PDF A4 Paisagem completo em memória."""
@@ -506,6 +522,7 @@ def generate_panel_pdf_sync(
     qr_reader = ImageReader(io.BytesIO(base64.b64decode(qr_b64)))
 
     custom_logo = _decode_custom_logo(logo_data_url or DEFAULT_LOGO_DATA_URL)
+    right_logo = _decode_custom_logo(right_logo_data_url) if right_logo_data_url else None
     col_w = SHEET_W / float(COLS)
 
     # 1. Tenta manter todas as empresas em uma única página A4 Paisagem dentro de limites legíveis
@@ -536,6 +553,7 @@ def generate_panel_pdf_sync(
             qr_reader=qr_reader,
             public_url=public_url,
             custom_logo=custom_logo,
+            right_logo=right_logo,
             header_style=header_style,
             page_idx=1,
             total_pages=1,
@@ -571,6 +589,7 @@ def generate_panel_pdf_sync(
                 qr_reader=qr_reader,
                 public_url=public_url,
                 custom_logo=custom_logo,
+                right_logo=right_logo,
                 header_style=header_style,
                 page_idx=idx,
                 total_pages=len(slices),
@@ -586,6 +605,7 @@ async def generate_panel_pdf(
     companies: List[Dict[str, Any]],
     public_url: str,
     logo_data_url: Optional[str] = None,
+    right_logo_data_url: Optional[str] = None,
     header_style: str = "dark",
 ) -> bytes:
     """Wrapper assíncrono para geração de PDF."""
@@ -594,5 +614,6 @@ async def generate_panel_pdf(
         companies=companies,
         public_url=public_url,
         logo_data_url=logo_data_url,
+        right_logo_data_url=right_logo_data_url,
         header_style=header_style,
     )

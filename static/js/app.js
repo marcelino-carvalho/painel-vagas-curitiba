@@ -23,6 +23,13 @@
   const btnUploadLogo = document.getElementById("btn-upload-logo");
   const btnResetLogo = document.getElementById("btn-reset-logo");
   const logoThumbImg = document.getElementById("logo-thumb-img");
+
+  const rightLogoFileInput = document.getElementById("right-logo-file-input");
+  const btnUploadRightLogo = document.getElementById("btn-upload-right-logo");
+  const btnRemoveRightLogo = document.getElementById("btn-remove-right-logo");
+  const rightLogoThumbImg = document.getElementById("right-logo-thumb-img");
+  const rightLogoEmptyLabel = document.getElementById("right-logo-empty-label");
+
   const headerStyleSelect = document.getElementById("header-style-select");
 
   const statusBadge = document.getElementById("publish-status-badge");
@@ -32,6 +39,7 @@
 
   const previewBoard = document.getElementById("preview-board");
   const previewLogoImg = document.getElementById("preview-logo-img");
+  const previewRightLogoImg = document.getElementById("preview-right-logo-img");
   const previewTitleEl = document.getElementById("preview-main-title");
   const previewGridEl = document.getElementById("preview-grid");
   const previewFooterContainer = document.getElementById("preview-footer-container");
@@ -53,6 +61,7 @@
   let currentPublicUrl = bootData.initial_public_url || "";
   let currentQrDataUrl = bootData.initial_qr_data_url || "";
   let currentLogoDataUrl = null;
+  let currentRightLogoDataUrl = ""; // padrão: sem logo à direita
   const defaultLogoDataUrl = bootData.default_logo_data_url || "";
   let keepAliveActive = Boolean(bootData.keep_alive_enabled);
   let keepAliveTimer = null;
@@ -180,11 +189,38 @@
     countCompaniesEl.textContent = String(parsed.totalCompanies);
     countJobsEl.textContent = String(parsed.totalJobs);
 
-    // Atualiza título e logotipo
+    // Atualiza título e logotipo esquerdo
     previewTitleEl.textContent = titleVal;
     const activeLogo = currentLogoDataUrl || defaultLogoDataUrl;
     previewLogoImg.src = activeLogo;
     logoThumbImg.src = activeLogo;
+
+    // Atualiza logotipo direito opcional (padrão: oculto / sem logo)
+    if (currentRightLogoDataUrl) {
+      if (previewRightLogoImg) {
+        previewRightLogoImg.src = currentRightLogoDataUrl;
+        previewRightLogoImg.style.display = "block";
+      }
+      if (rightLogoThumbImg) {
+        rightLogoThumbImg.src = currentRightLogoDataUrl;
+        rightLogoThumbImg.style.display = "block";
+      }
+      if (rightLogoEmptyLabel) {
+        rightLogoEmptyLabel.style.display = "none";
+      }
+    } else {
+      if (previewRightLogoImg) {
+        previewRightLogoImg.src = "";
+        previewRightLogoImg.style.display = "none";
+      }
+      if (rightLogoThumbImg) {
+        rightLogoThumbImg.src = "";
+        rightLogoThumbImg.style.display = "none";
+      }
+      if (rightLogoEmptyLabel) {
+        rightLogoEmptyLabel.style.display = "inline";
+      }
+    }
 
     // Atualiza estilo do cabeçalho das células
     const styleMode = headerStyleSelect ? headerStyleSelect.value : "dark";
@@ -301,6 +337,7 @@
           raw_text: rawText,
           slug: currentSlug,
           logo_data_url: currentLogoDataUrl,
+          right_logo_data_url: currentRightLogoDataUrl,
           header_style: headerStyleSelect ? headerStyleSelect.value : "dark",
         }),
       });
@@ -428,8 +465,44 @@
     btnResetLogo.style.display = "none";
     updatePublishUI(false);
     renderPreview();
-    showToast("Logotipo institucional padrão restaurado.", "success");
+    showToast("Logotipo esquerdo padrão restaurado.", "success");
   });
+
+  // Upload e remoção do logotipo opcional direito
+  if (btnUploadRightLogo && rightLogoFileInput) {
+    btnUploadRightLogo.addEventListener("click", function () {
+      rightLogoFileInput.click();
+    });
+
+    rightLogoFileInput.addEventListener("change", function (e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      if (!file.type.startsWith("image/")) {
+        showToast("Selecione um arquivo de imagem válido (PNG, JPG, SVG ou WebP).", "error");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = function (ev) {
+        currentRightLogoDataUrl = ev.target.result;
+        if (btnRemoveRightLogo) btnRemoveRightLogo.style.display = "inline-flex";
+        updatePublishUI(false);
+        renderPreview();
+        showToast("Logotipo direito adicionado ao painel e ao PDF!", "success");
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  if (btnRemoveRightLogo) {
+    btnRemoveRightLogo.addEventListener("click", function () {
+      currentRightLogoDataUrl = "";
+      if (rightLogoFileInput) rightLogoFileInput.value = "";
+      btnRemoveRightLogo.style.display = "none";
+      updatePublishUI(false);
+      renderPreview();
+      showToast("Logotipo direito removido.", "success");
+    });
+  }
 
   // Limpar campo com confirmação obrigatória
   btnClear.addEventListener("click", function () {
