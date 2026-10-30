@@ -129,8 +129,11 @@ def get_public_base_url(request_host: Optional[str] = None, request_scheme: str 
     if _custom_public_base_url:
         return _custom_public_base_url
 
-    # 2. Variável de ambiente PUBLIC_BASE_URL
-    env_url = os.environ.get("PUBLIC_BASE_URL", "").strip().rstrip("/")
+    # 2. Variável de ambiente PUBLIC_BASE_URL ou RENDER_EXTERNAL_URL (injetada automaticamente pelo Render)
+    env_url = (
+        os.environ.get("PUBLIC_BASE_URL", "").strip()
+        or os.environ.get("RENDER_EXTERNAL_URL", "").strip()
+    ).rstrip("/")
     if env_url:
         host_part = re.sub(r"^https?://", "", env_url).split("/")[0]
         if not is_local_or_private_host(host_part):

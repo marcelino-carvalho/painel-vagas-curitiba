@@ -159,7 +159,7 @@ def test_criterio_5_6_7_8_9_10_fluxo_completo(client: TestClient):
 
     reader = PdfReader(io.BytesIO(pdf_res.content))
     assert len(reader.pages) == 1  # 65 empresas cabem em 1 página A4 Paisagem
-    extracted_text = "\n".join(page.extract_text() or "" for page in reader.pages)
+    extracted_text = re.sub(r"\s+", " ", "\n".join(page.extract_text() or "" for page in reader.pages))
 
     assert "MUTIRÃO EMPREGA + BOQUEIRÃO ATUALIZADO" in extracted_text
     assert "AÇÃO SOCIAL DO PARANA" in extracted_text

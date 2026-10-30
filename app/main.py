@@ -54,7 +54,13 @@ Analista Administrativo"""
 async def lifespan(app: FastAPI):
     init_db()
     port = int(os.environ.get("PORT", "8000"))
-    if not os.environ.get("PUBLIC_BASE_URL"):
+    is_cloud_hosted = bool(
+        os.environ.get("PUBLIC_BASE_URL")
+        or os.environ.get("RENDER")
+        or os.environ.get("RENDER_EXTERNAL_URL")
+        or os.environ.get("RAILWAY_ENVIRONMENT")
+    )
+    if not is_cloud_hosted:
         start_public_tunnel(local_port=port)
     yield
 
