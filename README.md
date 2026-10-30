@@ -1,10 +1,10 @@
-# 🏢 Sistema de Criação de Painel de Vagas — Agência do Trabalhador de Curitiba
+#Sistema de Criação de Painel de Vagas — Agência do Trabalhador de Curitiba
 
 > **Solução Full Stack de alto impacto social para automação, diagramação institucional em PDF A4 e publicação digital em tempo real com QR Code para mutirões de emprego.**
 
 ---
 
-## 🎯 Sobre o Projeto
+##Sobre o Projeto
 
 Nos mutirões de emprego da **Agência do Trabalhador de Curitiba (Secretaria do Trabalho, Qualificação e Renda / Governo do Paraná)**, dezenas de empresas ofertam centenas de vagas simultaneamente. A consolidação dessas informações costumava ser manual e demorada.
 
@@ -17,7 +17,7 @@ Este sistema foi desenvolvido com foco em **experiência do usuário (UX), produ
 
 ---
 
-## ✨ Principais Funcionalidades
+##Principais Funcionalidades
 
 - **Parser Inteligente de Entrada Única:**
   - 1ª linha do bloco = Nome da Empresa.
@@ -45,7 +45,7 @@ Este sistema foi desenvolvido com foco em **experiência do usuário (UX), produ
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+##Tecnologias Utilizadas
 
 - **Back-end:** Python 3, FastAPI, Uvicorn, Pydantic, SQLite3 (Persistência com slugs permanentes).
 - **Geração de Documentos:** ReportLab (PDF vetorial A4 Paisagem), QRCode, Pillow.
@@ -54,7 +54,7 @@ Este sistema foi desenvolvido com foco em **experiência do usuário (UX), produ
 
 ---
 
-## 🏛️ Arquitetura do Repositório
+##Arquitetura do Repositório
 
 ```text
 ├── app/
@@ -82,7 +82,7 @@ Este sistema foi desenvolvido com foco em **experiência do usuário (UX), produ
 
 ---
 
-## 🚀 Como Executar Localmente
+##Como Executar Localmente
 
 ### Pré-requisitos
 - Python 3.10 ou superior instalado.
@@ -103,7 +103,7 @@ python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
 
 ---
 
-## 🧪 Qualidade de Código e Testes Automatizados
+##Qualidade de Código e Testes Automatizados
 
 O projeto conta com uma suíte de testes de ponta a ponta cobrindo os cenários de negócio (tratamento de espaçamentos, blocos extensos, integridade de slugs, consistência dos dados extraídos do PDF e responsividade mobile):
 
@@ -113,7 +113,7 @@ pytest tests/test_acceptance.py -v
 
 ---
 
-## 👨‍💻 Autor
+##Autor
 
 Desenvolvido por **Marcelino Carvalho**.  
 Projeto voltado à modernização de processos públicos e inclusão produtiva.
