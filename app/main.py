@@ -11,6 +11,7 @@ import urllib.request
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Optional
+from urllib.parse import quote
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, Response
 from fastapi.staticfiles import StaticFiles
@@ -276,12 +277,16 @@ async def api_export_panel_pdf(request: Request, slug: str):
         header_style=panel["header_style"],
     )
 
-    filename = f"painel-vagas-{panel['slug']}.pdf"
+    import re
+    raw_title = (panel["title"] or "Painel de Vagas").strip()
+    safe_title = re.sub(r'[\\/:*?"<>|]+', "-", raw_title).strip() or panel["slug"]
+    encoded_filename = quote(f"{safe_title}.pdf")
+    ascii_fallback = f"{panel['slug']}.pdf"
     return Response(
         content=pdf_bytes,
         media_type="application/pdf",
         headers={
-            "Content-Disposition": f'attachment; filename="{filename}"',
+            "Content-Disposition": f"attachment; filename=\"{ascii_fallback}\"; filename*=UTF-8''{encoded_filename}",
         },
     )
 

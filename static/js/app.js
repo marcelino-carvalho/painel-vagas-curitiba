@@ -358,7 +358,9 @@
       const downloadUrl = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = downloadUrl;
-      a.download = "painel-vagas-" + pubData.slug + ".pdf";
+      const rawTitle = (titleInput.value || "").trim() || pubData.title || "Painel de Vagas";
+      const safeFileName = rawTitle.replace(/[\\/:*?"<>|]+/g, "-").replace(/\s+/g, " ").trim();
+      a.download = safeFileName + ".pdf";
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
